@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>真学会 LearnLoop · 概念原型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg class="ring" viewBox="0 0 36 36" fill="none">
+      <circle cx="18" cy="18" r="14" stroke="#d6e7df" stroke-width="4"/>
+      <path d="M18 4 a14 14 0 0 1 12.1 21" stroke="#1c6b4f" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="18" cy="18" r="4" fill="#c8821f"/>
+    </svg>
+    <div class="stack"><span class="name">真学会</span><span class="en">LearnLoop</span></div>
+  </div>
+  <div class="tagline">批完不算完,<b>真学会</b>才算</div>
+  <div class="classpick" id="classpick">
+    <span class="cl-lbl">班级</span>
+    <button class="cp on" onclick="filterClass(this,'all','全部班')">全部班</button>
+    <button class="cp" onclick="filterClass(this,'c3','初二(3)班')">初二(3)班</button>
+    <button class="cp" onclick="filterClass(this,'c2','初二(2)班')">初二(2)班</button>
+    <button class="cp" onclick="filterClass(this,'c1','初二(1)班')">初二(1)班</button>
+    <button class="cp cp-add" onclick="tnav('classes')">+ 新建班级</button>
+  </div>
+  <div class="toggle">
+    <span class="lbl">演示视图</span>
+    <button id="btnTeacher" class="active" onclick="setView('teacher')">👩‍🏫 教师端 · PC</button>
+    <button id="btnStudent" onclick="setView('student')">🧑‍🎓 学生端 · Pad</button>
+  </div>
+</header>
+
+<!-- ================= TEACHER ================= -->
+<section id="teacher" class="view active">
+  <div class="tboard">
+    <aside class="side">
+      <div class="grp">教学</div>
+      <div class="nav-i active" id="nav-home" onclick="tnav('home')"><span class="ic">🏠</span>工作台</div>
+      <div class="nav-i" id="nav-assign" onclick="tnav('assign')"><span class="ic">📋</span>作业布置</div>
+      <div class="nav-i" id="nav-collect" onclick="tnav('collect')"><span class="ic">📁</span>作业管理</div>
+      <div class="nav-i" id="nav-grade" onclick="tnav('grade')"><span class="ic">✍️</span>智能批改<span class="badge">1</span></div>
+      <div class="nav-i" id="nav-review" onclick="tnav('review')"><span class="ic">📝</span>备课讲评<span class="badge">2</span></div>
+      <div class="nav-i" id="nav-recap" onclick="tnav('recap')"><span class="ic">📊</span>学情回收</div>
+      <div class="grp">沉淀</div>
+      <div class="nav-i" id="nav-bank" onclick="tnav('bank')"><span class="ic">📚</span>题库</div>
+      <div class="nav-i" id="nav-trace" onclick="tnav('trace')"><span class="ic">📈</span>学情溯源</div>
+      <div class="nav-i" id="nav-parent" onclick="tnav('parent')"><span class="ic">💬</span>家长摘要</div>
+      <div class="grp">班级与设置</div>
+      <div class="nav-i" id="nav-classes" onclick="tnav('classes')"><span class="ic">🏫</span>班级与学生</div>
+      <div class="me"><span class="av">👩‍🏫</span><div><div class="nm">陈老师</div><div class="rl">初二数学 · 3 班</div></div></div>
+    </aside>
+
+    <main class="tmain">
+      <!-- 工作台 -->
+      <div class="tpage active" id="page-home">
+        <div class="card hello-card">
+          <div>
+            <div class="hi">上午好,陈老师 ☀️</div>
+            <div class="desc">你带的 <b>3 个班</b>当前有 <b id="homeActive">4</b> 份作业在进行中,其中 <b>3 份</b> AI 已判分、待你确认。</div>
+          </div>
+          <div class="quote"><b>“批完不算完”</b>看看这次讲评,大家是不是真学会了。</div>
+        </div>
+
+        <!-- 待办行动区:跨班聚合,按需要我行动的环节分桶 -->
+        <div class="sec-t">⚡ 需要我现在做的 <span class="hint" style="font-weight:400; color:var(--ink-faint); font-size:12px;">跨 <span id="scopeLabel">全部班</span> 聚合 · 点击直达</span></div>
+        <div class="acts">
+          <div class="card act amber" onclick="tnav('grade')">
+            <div class="ai">🔎</div>
+            <div><div class="an">3 <small>份</small></div><div class="al">待确认批改</div></div>
+          </div>
+          <div class="card act green" onclick="tnav('review')">
+            <div class="ai">📝</div>
+            <div><div class="an">2 <small>份</small></div><div class="al">待讲评</div></div>
+          </div>
+          <div class="card act warn" onclick="tnav('recap')">
+            <div class="ai">⏰</div>
+            <div><div class="an">5 <small>人</small></div><div class="al">订正逾期未交</div></div>
+          </div>
+          <div class="card act" onclick="tnav('trace')">
+            <div class="ai">🙋</div>
+            <div><div class="an">2 <small>人</small></div><div class="al">建议今天面批</div></div>
+          </div>
+        </div>
+
+        <!-- 健康度:低调单行,真学会率 + 未闭环 -->
+        <div class="card health">
+          <span class="hi-ic">🌱</span>
+          <span class="h-item">本周真学会率 <b class="g">78%</b> <span class="up">↑ 较上周 +6%</span></span>
+          <span class="h-sep"></span>
+          <span class="h-item"><b class="r">3</b> 个 Loop 未闭环</span>
+          <span class="h-go" onclick="tnav('recap')">看未闭环 →</span>
+        </div>
+
+        <!-- 作业 Loop 总览:仅进行中(未闭环),按时间倒序 -->
+        <div class="sec-t">🔄 进行中的作业 Loop <span class="hint" style="font-weight:400; color:var(--ink-faint); font-size:12px;">按时间倒序 · 仅未闭环</span></div>
+        <div class="card rlist" id="homeLoopList">
+          <div class="rrow" data-class="c3" onclick="gotoDetail('grade')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(3)班 · 第 12 次 · 38/40 已交 · AI 已判 142 错题</p></div><span class="rmeta">今天 10:24</span><span class="pill amber">待确认</span></div>
+          <div class="rrow" data-class="c2" onclick="gotoDetail('collect')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(2)班 · 第 12 次 · 38/39 已交 · 回收齐待批</p></div><span class="rmeta">今天 09:50</span><span class="pill gray">待批改</span></div>
+          <div class="rrow" data-class="c1" onclick="gotoDetail('review')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(1)班 · 第 12 次 · 已确认批改 · 41/41</p></div><span class="rmeta">昨天 16:10</span><span class="pill blue">待讲评</span></div>
+          <div class="rrow" data-class="c3" onclick="gotoDetail('recap')"><div class="rc">📊</div><div class="rt"><b>一元一次不等式 · 小测</b><p>初二(3)班 · 第 11 次 · 已布置订正 · 32/38 已学会</p></div><span class="rmeta">2 天前</span><span class="pill green">订正回收中</span></div>
+        </div>
+        <div class="listfoot"><span class="viewall" onclick="tnav('collect')">查看全部作业 →</span></div>
+      </div>
+
+      <!-- 作业布置 -->
+      <div class="tpage" id="page-assign">
+        <div class="phead">
+          <div class="eyebrow">作业布置 · 作业准备</div>
+          <h1 style="margin-top:8px;">准备一份作业,发给班级</h1>
+          <div class="sub">题目带上<b>标准答案与知识点</b>,后面的批改、订正、溯源才能自动串起来</div>
+        </div>
+
+        <div class="importer" style="cursor:default;">
+          <span class="ii">🧩</span>
+          <div class="it"><b>怎么出这份卷子?</b><p>三种入口,结果都会落到下方「当前试卷」,逐题带标准答案与知识点</p></div>
+          <div class="imp-seg">
+            <button class="iseg on" id="iseg-bank" onclick="impEntry('bank')">题库选题</button>
+            <button class="iseg" id="iseg-split" onclick="impEntry('split')">上传拆题</button>
+            <button class="iseg" id="iseg-manual" onclick="impEntry('manual')">手动录入</button>
+          </div>
+        </div>
+
+        <!-- 入口①题库选题 -->
+        <div class="entry active card blk" id="entry-bank">
+          <h3>从题库选题入卷 <span class="hint">已选 3 / 题库 <span id="assignBankCount">12</span> 题</span> <span class="viewall" style="margin-left:8px; font-size:12px;" onclick="event.stopPropagation(); tnav('bank')">管理题库 →</span></h3>
+          <div class="qbank-filter" style="margin-top:10px;">
+            <span class="fchip on">一次函数</span>
+            <span class="fchip">看图判断增减</span>
+            <span class="fchip">求解析式</span>
+            <span class="fchip">围成面积</span>
+            <span class="fchip">难度 ★★★</span>
+          </div>
+          <div>
+            <div class="qpick sel" onclick="this.classList.toggle('sel')"><span class="ck">✓</span><div class="qpt"><b>看图判断 y=kx+b 中 k、b 的符号</b> · 选择题 · ★★★</div><span class="ktag">看图判断增减</span></div>
+            <div class="qpick sel" onclick="this.classList.toggle('sel')"><span class="ck">✓</span><div class="qpt"><b>已知两点求一次函数解析式</b> · 解答题 · ★★</div><span class="ktag">求解析式</span></div>
+            <div class="qpick sel" onclick="this.classList.toggle('sel')"><span class="ck">✓</span><div class="qpt"><b>直线与坐标轴围成三角形的面积</b> · 解答题 · ★★★</div><span class="ktag">围成面积</span></div>
+            <div class="qpick" onclick="this.classList.toggle('sel')"><span class="ck">✓</span><div class="qpt"><b>一次函数图像的平移与解析式变化</b> · 选择题 · ★★</div><span class="ktag">图像平移</span></div>
+          </div>
+          <button class="gen-btn" style="margin-top:14px;" onclick="toast('已把所选题目加入当前试卷')">＋ 加入当前试卷</button>
+        </div>
+
+        <!-- 入口②上传拆题 -->
+        <div class="entry card blk" id="entry-split">
+          <h3>上传图片 / 文档,自动拆题 <span class="hint">AI 拆题后逐题确认</span></h3>
+          <div class="uploader" style="margin:10px 0 16px;">
+            <div class="up" onclick="toast('已上传试卷图片 · AI 拆题中')"><span class="ic">🖼️</span><b>上传图片</b><p>拍照 / 截图整卷</p></div>
+            <div class="up" onclick="toast('已上传 Word/PDF · AI 拆题中')"><span class="ic">📄</span><b>上传 Word / PDF</b><p>电子卷自动解析</p></div>
+          </div>
+          <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:10px;">AI 已拆出 8 题,请逐题确认题干、标准答案与知识点：</div>
+          <div class="split-item">
+            <div class="si-h"><span class="qe-no">Q3</span><span class="si-st ok">已确认</span></div>
+            <div style="font-size:13px;">看图判断 y=kx+b 中 k、b 的符号 · 答案 <b>B</b> · 知识点「看图判断增减」</div>
+          </div>
+          <div class="split-item">
+            <div class="si-h"><span class="qe-no">Q5</span><span class="si-st ok">已确认</span></div>
+            <div style="font-size:13px;">已知两点求一次函数解析式 · 答案 <b>y=2x-1</b> · 知识点「求解析式」</div>
+          </div>
+          <div class="split-item">
+            <div class="si-h"><span class="qe-no">Q7</span><span class="si-st wait">待确认</span></div>
+            <div style="font-size:13px;">直线与坐标轴围成三角形的面积 · AI 建议答案 <b>4</b> · 知识点「围成面积」</div>
+            <div class="gbtns"><button class="gbtn on" onclick="confirmSplit(this)">✓ 确认</button><button class="gbtn" onclick="toast('已打开编辑 · 可改题干/答案/知识点')">编辑</button></div>
+          </div>
+        </div>
+
+        <!-- 入口③手动录入 -->
+        <div class="entry card blk" id="entry-manual">
+          <h3>手动新建题目</h3>
+          <div style="margin-top:12px; display:flex; flex-direction:column; gap:12px;">
+            <div><div class="prop" style="border:0; padding:0 0 6px;"><span class="lb">题干</span></div><div class="write" style="height:60px; margin-top:0;">在此输入或粘贴题干…</div></div>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <div style="flex:1; min-width:160px;"><div class="prop" style="border:0; padding:0 0 6px;"><span class="lb">标准答案</span></div><div class="write" style="height:42px; margin-top:0;">输入答案</div></div>
+              <div style="flex:1; min-width:160px;"><div class="prop" style="border:0; padding:0 0 6px;"><span class="lb">知识点</span></div><div class="qbank-filter" style="margin:0;"><span class="fchip on">求解析式</span><span class="fchip">＋ 添加</span></div></div>
+            </div>
+          </div>
+          <button class="gen-btn" style="margin-top:14px;" onclick="toast('已添加 1 道题到当前试卷')">＋ 添加到当前试卷</button>
+        </div>
+
+        <div class="sec-t" style="margin-top:20px;">📄 当前试卷</div>
+        <div class="grid-2">
+          <div class="card blk">
+            <h3>题目清单 <span class="hint">共 8 题 · 已标注知识点</span></h3>
+            <div style="margin-top:6px;">
+              <div class="qedit">
+                <div class="qe-top"><span class="qe-no">Q1</span><span class="qe-q">看图判断 y=kx+b 中 k、b 的符号</span><span class="qe-ans">答案 B</span></div>
+                <div class="qe-tags"><span class="ktag">看图判断增减</span><span class="ktag">难度 ★★★</span></div>
+              </div>
+              <div class="qedit">
+                <div class="qe-top"><span class="qe-no">Q2</span><span class="qe-q">已知两点求一次函数解析式</span><span class="qe-ans">y=2x-1</span></div>
+                <div class="qe-tags"><span class="ktag">求解析式</span><span class="ktag">难度 ★★</span></div>
+              </div>
+              <div class="qedit">
+                <div class="qe-top"><span class="qe-no">Q3</span><span class="qe-q">直线与坐标轴围成三角形的面积</span><span class="qe-ans">面积 = 4</span></div>
+                <div class="qe-tags"><span class="ktag">围成面积</span><span class="ktag">难度 ★★★</span></div>
+              </div>
+              <div class="qedit" style="text-align:center; color:var(--ink-faint); font-size:12.5px;">⋯ 其余 5 题已就绪</div>
+            </div>
+          </div>
+
+          <div class="card blk">
+            <h3>发布设置 <span class="hint">可调整后再发布</span></h3>
+            <div style="margin-top:6px;">
+              <div class="prop">
+                <span class="lb">布置班级 <span style="color:var(--ink-faint); font-weight:400;">(可多选)</span></span>
+                <span class="v pe-classes">
+                  <span class="pchip on" onclick="togglePchip(this)">初二(3)班</span>
+                  <span class="pchip" onclick="togglePchip(this)">初二(2)班</span>
+                  <span class="pchip" onclick="togglePchip(this)">初二(1)班</span>
+                </span>
+              </div>
+              <div class="prop">
+                <span class="lb">作答方式</span>
+                <span class="v pe-seg">
+                  <span class="pseg on" onclick="pickSeg(this)">Pad 电子作答</span>
+                  <span class="pseg" onclick="pickSeg(this)">纸质拍照</span>
+                </span>
+              </div>
+              <div class="prop"><span class="lb">截止时间</span><input class="pe-input" type="datetime-local" value="2026-06-24T09:00"></div>
+              <div class="prop"><span class="lb">题目数 / 总分</span><span class="v">8 题 · 100 分 <span class="ro">随题目带出</span></span></div>
+              <div class="prop"><span class="lb">覆盖知识点</span><span class="v" style="text-align:right; max-width:210px;">看图判断增减 · 求解析式 · 围成面积 <span class="ro">自动标注</span></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <div class="ab-txt">发布后,班级 <b>40 名学生</b>会在 Pad 上收到这份作业,作答提交后自动进入「作业管理」</div>
+          <div class="gate">
+            <button class="ghost-btn">存为草稿</button>
+            <button class="cta" onclick="publishAssign()">发布给班级 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 题库 -->
+      <div class="tpage" id="page-bank">
+        <!-- 列表：题库中心 -->
+        <div class="subview active" id="bank-list">
+          <div class="phead bank-head">
+            <div class="bank-title-row">
+              <div>
+                <div class="eyebrow">题库 · 沉淀与复用</div>
+                <h1 style="margin-top:8px;">题库中心 <span class="bank-count" id="bankCountBadge">12 题</span></h1>
+                <div class="sub">已入库题目可复用于布置作业、订正推题与变式生成 · 每题带标准答案与知识点</div>
+              </div>
+              <div class="bank-actions">
+                <button class="gen-btn sm" onclick="openBankView('variant')">✨ 新建变式</button>
+                <button class="cta sm" onclick="openBankView('add')">＋ 新增题目</button>
+              </div>
+            </div>
+          </div>
+          <div class="bank-toolbar card">
+            <div class="bank-search">
+              <span class="si">🔍</span>
+              <input type="text" id="bankSearch" placeholder="搜索题干关键字、知识点…" oninput="filterBankList()">
+            </div>
+            <select class="bank-select" id="bankSubject" onchange="filterBankList()">
+              <option value="">全部科目</option>
+              <option value="数学" selected>数学</option>
+            </select>
+            <select class="bank-select" id="bankKp" onchange="filterBankList()">
+              <option value="">全部知识点</option>
+            </select>
+          </div>
+          <div class="card blk bank-table-wrap">
+            <table class="stable bank-table">
+              <thead><tr><th>题干</th><th>题型</th><th>知识点</th><th>难度</th><th>来源</th><th>引用</th><th></th></tr></thead>
+              <tbody id="bankTableBody"></tbody>
+            </table>
+            <div class="bank-empty" id="bankEmpty" style="display:none;">
+              <div class="be-ic">📖</div>
+              <b>未找到题目</b>
+              <p>换个关键字试试,或新建一道题入库</p>
+            </div>
+          </div>
+          <div class="bank-pager">
+            <button class="ghost-btn light sm" onclick="toast('演示数据仅 1 页')">上一页</button>
+            <span class="pg-info" id="bankPagerInfo">第 1 / 1 页 · 共 12 题</span>
+            <button class="ghost-btn light sm" onclick="toast('演示数据仅 1 页')">下一页</button>
+          </div>
+        </div>
+
+        <!-- 详情：单题 -->
+        <div class="subview" id="bank-detail">
+          <div class="backlink" onclick="openBankView('list')">← 返回题库列表</div>
+          <div class="phead">
+            <div class="eyebrow">题库 · 题目详情</div>
+            <h1 style="margin-top:8px;" id="bankDetailStem">—</h1>
+            <div class="sub" id="bankDetailMeta">—</div>
+          </div>
+          <div class="grid-2">
+            <div class="card blk">
+              <h3>题目内容</h3>
+              <div class="bank-qbox" id="bankDetailBody">—</div>
+              <div class="bank-ans-row"><span class="lb">标准答案</span><span class="qe-ans" id="bankDetailAns">—</span></div>
+              <div class="bank-tags" id="bankDetailTags"></div>
+            </div>
+            <div class="card blk">
+              <h3>使用情况</h3>
+              <div class="stat-row" style="margin-top:4px;">
+                <div class="card stat"><div class="k">布置引用</div><div class="v" id="bankDetailUsed">—<small> 次</small></div></div>
+                <div class="card stat"><div class="k">变式衍生</div><div class="v" id="bankDetailVar">—<small> 道</small></div></div>
+              </div>
+              <div class="sec-t" style="margin-top:16px;">关联变式</div>
+              <div id="bankDetailVariants"></div>
+              <div class="bank-detail-acts">
+                <button class="gen-btn" onclick="openBankVariantFromDetail()">✨ 基于此题生成变式</button>
+                <button class="ghost-btn light" onclick="toast('已复制题目 · 可粘贴到作业布置')">复制到布置</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 新增题目 -->
+        <div class="subview" id="bank-add">
+          <div class="backlink" onclick="openBankView('list')">← 返回题库列表</div>
+          <div class="phead">
+            <div class="eyebrow">题库 · 新建入库</div>
+            <h1 style="margin-top:8px;">新增题目</h1>
+            <div class="sub">录入题干、标准答案与知识点,入库后可复用于布置作业与 AI 变式生成</div>
+          </div>
+          <div class="card blk bank-form">
+            <div class="bf-row">
+              <div class="prop"><span class="lb">科目</span>
+                <select class="bank-select full" id="addSubject"><option selected>数学</option></select>
+              </div>
+              <div class="prop"><span class="lb">题型</span>
+                <select class="bank-select full" id="addType"><option>选择题</option><option>填空题</option><option selected>解答题</option></select>
+              </div>
+              <div class="prop"><span class="lb">难度</span>
+                <select class="bank-select full" id="addDiff"><option>★</option><option>★★</option><option selected>★★★</option><option>★★★★</option></select>
+              </div>
+            </div>
+            <div class="prop block"><span class="lb">题干</span><div class="write tall" id="addStem" contenteditable="true">已知直线 y=kx+b 经过点 A(1,3) 和 B(-2,-3),求该直线的解析式。</div></div>
+            <div class="bf-row">
+              <div class="prop block" style="flex:1;"><span class="lb">标准答案</span><div class="write" id="addAns" contenteditable="true">y = 2x + 1</div></div>
+              <div class="prop block" style="flex:1;"><span class="lb">知识点</span>
+                <div class="qbank-filter" id="addKpChips">
+                  <span class="fchip on" onclick="toggleKpChip(this)">求解析式</span>
+                  <span class="fchip" onclick="toggleKpChip(this)">看图判断增减</span>
+                  <span class="fchip" onclick="toggleKpChip(this)">围成面积</span>
+                  <span class="fchip" onclick="toggleKpChip(this)">图像与 k/b</span>
+                  <span class="fchip" onclick="toggleKpChip(this)">求交点</span>
+                  <span class="fchip" onclick="toggleKpChip(this)">图像平移</span>
+                  <span class="fchip" onclick="toggleKpChip(this)">与方程结合</span>
+                  <span class="fchip" onclick="toggleKpChip(this)">函数概念</span>
+                  <span class="fchip" onclick="toggleKpChip(this)">与不等式结合</span>
+                </div>
+              </div>
+            </div>
+            <div class="prop block"><span class="lb">解析（可选）</span><div class="write" id="addExp" contenteditable="true">设解析式 y=kx+b,代入两点列方程组求解 k、b。</div></div>
+          </div>
+          <div class="action-bar">
+            <div class="ab-txt">入库后可在<b>作业布置</b>直接选题,也可作为<b>变式生成</b>的源题</div>
+            <div class="gate">
+              <button class="ghost-btn" onclick="openBankView('list')">取消</button>
+              <button class="cta" onclick="saveNewQuestion()">确认入库 →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 新建变式 -->
+        <div class="subview" id="bank-variant">
+          <div class="backlink" onclick="openBankView('list')">← 返回题库列表</div>
+          <div class="phead bank-title-row">
+            <div>
+              <div class="eyebrow">题库 · AI 变式</div>
+              <h1 style="margin-top:8px;">✨ 新建变式</h1>
+              <div class="sub">选择源题、勾选维度,AI 生成一组变式供审阅入库</div>
+            </div>
+          </div>
+          <div class="grid-2 bank-var-grid">
+            <div class="card blk">
+              <h3>① 选择源题</h3>
+              <div class="var-tabs">
+                <button class="vtab on" id="vtab-pick" onclick="setVarTab('pick')">📚 题库选题</button>
+                <button class="vtab" id="vtab-quick" onclick="setVarTab('quick')">✏️ 快速录入</button>
+              </div>
+              <div id="varPanel-pick">
+                <div class="bank-search compact" style="margin:10px 0;">
+                  <span class="si">🔍</span>
+                  <input type="text" id="varSearch" placeholder="搜索题库题干关键字…" oninput="renderVarPickList()">
+                </div>
+                <div class="var-pick-list" id="varPickList"></div>
+              </div>
+              <div id="varPanel-quick" style="display:none;">
+                <div class="write tall" id="varQuickStem" contenteditable="true" style="margin-top:10px;">在此粘贴或输入源题题干…</div>
+                <button class="gen-btn" style="margin-top:10px;" onclick="toast('已设为变式源题')">设为源题</button>
+              </div>
+              <div class="var-source card" id="varSourceCard" style="display:none;">
+                <div class="vs-lb">已选源题</div>
+                <b id="varSourceStem">—</b>
+                <div class="bank-tags" id="varSourceTags"></div>
+              </div>
+            </div>
+            <div class="card blk">
+              <h3>② 生成参数</h3>
+              <div class="sec-t" style="margin-top:4px;">变式维度 <span class="hint">可多选</span></div>
+              <div class="dim-list">
+                <label class="dim on"><input type="checkbox" checked onchange="toggleDim(this)"><div><b>等价变式</b><p>同方法同难度,换数值 / 情境 / 对象（巩固）</p></div></label>
+                <label class="dim"><input type="checkbox" onchange="toggleDim(this)"><div><b>难度变式</b><p>在原题基础上增难或降难（分层）</p></div></label>
+                <label class="dim"><input type="checkbox" onchange="toggleDim(this)"><div><b>拓展变式</b><p>改问法 / 增减条件 / 逆向 / 综合（拔高）</p></div></label>
+              </div>
+              <div class="bf-row" style="margin-top:14px;">
+                <div class="prop"><span class="lb">生成数量</span><input class="pe-input" type="number" id="varCount" value="3" min="1" max="8" style="width:100%;"></div>
+                <div class="prop"><span class="lb">难度目标</span>
+                  <select class="bank-select full" id="varDiff"><option>与原题相同</option><option selected>混合</option><option>偏易</option><option>偏难</option></select>
+                </div>
+              </div>
+              <div class="prop block" style="margin-top:10px;"><span class="lb">自由要求 <span class="hint">选填</span></span>
+                <div class="write" id="varPrompt" contenteditable="true">保持一次函数情境,避免出现负数坐标,适合初二学生。</div>
+              </div>
+              <button class="cta full" style="margin-top:16px;" onclick="genVariants()">✨ 生成变式</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 变式审阅入库 -->
+        <div class="subview" id="bank-vreview">
+          <div class="backlink" onclick="openBankView('variant')">← 返回变式设置</div>
+          <div class="phead">
+            <div class="eyebrow">题库 · 变式审阅</div>
+            <h1 style="margin-top:8px;">审阅 AI 生成的变式</h1>
+            <div class="sub">勾选要入库的变式,确认答案与知识点后可批量入库 · 源题:<b id="vreviewSource">—</b></div>
+          </div>
+          <div id="vreviewList"></div>
+          <div class="action-bar">
+            <div class="ab-txt">入库后可<b>布置作业</b>或<b>推给订正未完成的学生</b></div>
+            <div class="gate">
+              <button class="ghost-btn" onclick="openBankView('variant')">重新生成</button>
+              <button class="cta" onclick="saveVariants()">确认入库 (<span id="vreviewSel">0</span>) →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 作业管理 -->
+      <div class="tpage" id="page-collect">
+        <!-- 列表视图 -->
+        <div class="subview active" id="collect-list">
+          <div class="phead">
+            <div class="eyebrow">作业管理</div>
+            <h1 style="margin-top:8px;">我布置的作业</h1>
+            <div class="sub">按班级 / 作业次管理 · 点击进入,处理当前阶段 · 当前班级 <b>初二(3)班</b></div>
+          </div>
+
+          <div class="sec-t">📁 进行中 <span class="hint" style="font-weight:400; color:var(--ink-faint); font-size:12px;">每条带生命周期状态 · 点「待确认」的作业进入本次演示</span></div>
+          <div class="card rlist" style="margin-bottom:18px;">
+            <div class="rrow" onclick="gotoDetail('grade')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(3)班 · 第 12 次作业 · AI 已判 142 错题</p></div><span class="rmeta">待复核</span><span class="pill amber">待确认</span></div>
+            <div class="rrow" onclick="openSub('collect')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(2)班 · 第 12 次作业 · 回收齐,待 AI 批改</p></div><span class="rmeta">38/39 已交</span><span class="pill gray">待批改</span></div>
+            <div class="rrow" onclick="gotoDetail('review')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(1)班 · 第 12 次作业 · 已确认批改</p></div><span class="rmeta">待讲评</span><span class="pill blue">待讲评</span></div>
+            <div class="rrow" onclick="gotoDetail('recap')"><div class="rc">📊</div><div class="rt"><b>一元一次不等式 · 小测</b><p>初二(3)班 · 第 11 次作业 · 已布置订正</p></div><span class="rmeta">32/38 完成</span><span class="pill green">订正回收中</span></div>
+          </div>
+
+          <div class="sec-t">✅ 已完成</div>
+          <div class="card rlist">
+            <div class="rrow" onclick="toast('演示聚焦初二(3)班 · 一次函数;其他为占位数据')"><div class="rc">✅</div><div class="rt"><b>整式的乘法 · 课后作业</b><p>初二(3)班 · 第 10 次作业</p></div><span class="rmeta">学会率 91%</span><span class="pill gray">已闭环</span></div>
+            <div class="rrow" onclick="toast('演示聚焦初二(3)班 · 一次函数;其他为占位数据')"><div class="rc">✅</div><div class="rt"><b>平面直角坐标系 · 小测</b><p>初二(3)班 · 第 9 次作业</p></div><span class="rmeta">学会率 88%</span><span class="pill gray">已闭环</span></div>
+          </div>
+        </div>
+
+        <!-- 详情视图：提交情况 -->
+        <div class="subview" id="collect-detail">
+          <div class="backlink" onclick="backToList()">← 返回作业列表</div>
+          <div class="phead">
+            <div class="eyebrow">作业管理 · 提交详情</div>
+            <h1 style="margin-top:8px;">一次函数 · 课后作业</h1>
+            <div class="sub">初二(2)班 · 第 12 次作业 · 截止 今天 09:00 · 状态 <b>待批改</b></div>
+          </div>
+
+          <div class="lifeflow">
+            <div class="lf-node current"><span class="lf-dot">1</span><span class="lf-lb">作业管理</span></div>
+            <div class="lf-bar"></div>
+            <div class="lf-node"><span class="lf-dot">2</span><span class="lf-lb">智能批改</span></div>
+            <div class="lf-bar"></div>
+            <div class="lf-node"><span class="lf-dot">3</span><span class="lf-lb">备课讲评</span></div>
+            <div class="lf-bar"></div>
+            <div class="lf-node"><span class="lf-dot">4</span><span class="lf-lb">订正回收</span></div>
+            <div class="lf-bar"></div>
+            <div class="lf-node"><span class="lf-dot">✓</span><span class="lf-lb">已闭环</span></div>
+          </div>
+
+          <div class="card blk">
+            <h3>提交进度 <span class="hint">已交 38 / 39 人</span></h3>
+            <div class="bar" style="margin-top:10px;">
+              <div class="b-top"><span class="q">班级提交率</span><span class="pct">97%</span></div>
+              <div class="track"><div class="fill ok" style="width:97%"></div></div>
+            </div>
+            <div class="subgrid" id="subgrid"></div>
+            <div class="legend">
+              <span><i style="background:var(--brand)"></i>已提交 38</span>
+              <span><i style="background:var(--card-2);border:1px solid var(--line)"></i>未提交 1(已自动提醒)</span>
+            </div>
+          </div>
+
+          <div class="card blk" style="margin-top:14px;">
+            <h3>补录作答 <span class="hint">纸质作业可拍照,系统自动识别</span></h3>
+            <div class="uploader">
+              <div class="up" onclick="toast('已上传纸质作答 · OCR 识别中')"><span class="ic">📷</span><b>拍照上传</b><p>高拍仪 / 手机拍纸质卷</p></div>
+              <div class="up" onclick="toast('已打开电子作答补录')"><span class="ic">⌨️</span><b>电子补录</b><p>未交的 1 人手动录入</p></div>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <div class="ab-txt">已回收 <b>38 份作答</b> —— 收齐后交给 AI 批改并归因,生成每个人的错题数据</div>
+            <div class="gate">
+              <button class="ghost-btn">再等等未交的</button>
+              <button class="cta" onclick="startGrade()">开始智能批改 →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 智能批改 -->
+      <div class="tpage" id="page-grade">
+        <!-- 批改列表 -->
+        <div class="subview active" id="grade-list">
+          <div class="phead">
+            <div class="eyebrow">智能批改</div>
+            <h1 style="margin-top:8px;">待你把关的批改</h1>
+            <div class="sub">作答已回收的作业,AI 先判分归因,你逐份确认 · 跨初二 1–3 班聚合</div>
+          </div>
+          <div class="sec-t">⏳ 待确认 / 待复核 <span class="hint" style="font-weight:400; color:var(--ink-faint); font-size:12px;">AI 已判分归因,点开逐题复核、一键确认</span></div>
+          <div class="card rlist" style="margin-bottom:18px;">
+            <div class="rrow" onclick="openSub('grade')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(3)班 · 第 12 次 · 38 份已判 · 142 条错题待复核</p></div><span class="rmeta">今天 10:24</span><span class="pill amber">待确认</span></div>
+          </div>
+          <div class="sec-t">✅ 已确认(已转备课讲评)</div>
+          <div class="card rlist">
+            <div class="rrow" onclick="gotoDetail('review')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(1)班 · 第 12 次 · 已确认批改 · 142 条错题</p></div><span class="rmeta">昨天 16:10</span><span class="pill blue">待讲评</span></div>
+          </div>
+        </div>
+
+        <!-- 批改详情 -->
+        <div class="subview" id="grade-detail">
+        <div class="backlink" onclick="backSub('grade')">← 返回批改列表</div>
+        <div class="phead">
+          <div class="eyebrow">智能批改 · 待确认</div>
+          <h1 style="margin-top:8px;">AI 已判分归因,你来复核确认</h1>
+          <div class="sub">初二(3)班 · 一次函数课后作业 · 38 份已判 · <b>确认后转入备课讲评</b></div>
+        </div>
+
+        <div class="lifeflow">
+          <div class="lf-node done"><span class="lf-dot">✓</span><span class="lf-lb">作业管理</span></div>
+          <div class="lf-bar done"></div>
+          <div class="lf-node current"><span class="lf-dot">2</span><span class="lf-lb">智能批改</span></div>
+          <div class="lf-bar"></div>
+          <div class="lf-node"><span class="lf-dot">3</span><span class="lf-lb">备课讲评</span></div>
+          <div class="lf-bar"></div>
+          <div class="lf-node"><span class="lf-dot">4</span><span class="lf-lb">订正回收</span></div>
+          <div class="lf-bar"></div>
+          <div class="lf-node"><span class="lf-dot">✓</span><span class="lf-lb">已闭环</span></div>
+        </div>
+
+        <div class="stat-row">
+          <div class="card stat"><div class="k">已判作答</div><div class="v">38<small> 份</small></div><div class="meta">AI 自动判分 + 归因完成</div></div>
+          <div class="card stat"><div class="k">判分一致率</div><div class="v" style="color:var(--brand)">96<small>%</small></div><div class="meta">与抽样复核结果对比</div></div>
+          <div class="card stat"><div class="k">建议你复核</div><div class="v" style="color:var(--amber)">3<small> 题</small></div><div class="meta">书写潦草 / 步骤分有争议</div></div>
+          <div class="card stat"><div class="k">生成错题</div><div class="v">142<small> 条</small></div><div class="meta">已带知识点与错因大类</div></div>
+        </div>
+
+        <div class="card blk">
+          <h3>逐题批改与错因归因 <span class="hint">AI 已判,认可或改判都可以</span></h3>
+          <div style="margin-top:6px;">
+            <div class="grade-row">
+              <div class="gr-top">
+                <span class="gr-no">Q3</span>
+                <div class="gr-main">
+                  <div class="gq">看图判断 y=kx+b 中 k、b 的符号</div>
+                  <div class="gr-verdict"><span class="ai">AI 判分</span><span class="pill red">24 人错 / 63%</span><span class="pill amber">建议复核 2 份</span></div>
+                  <div class="gr-cause cause-line"><span class="cause-cat concept">概念性</span><span class="cause-desc">会根据公式计算，但未理解图像趋势与 k 正负的对应关系，把增减性判断反了</span> · 知识点「看图判断增减」</div>
+                  <div class="gbtns"><button class="gbtn on" onclick="gradeToggle(this)">✓ 认可判分</button><button class="gbtn" onclick="gradeToggle(this)">改判 / 调错因</button></div>
+                </div>
+              </div>
+            </div>
+            <div class="grade-row">
+              <div class="gr-top">
+                <span class="gr-no">Q7</span>
+                <div class="gr-main">
+                  <div class="gq">直线与坐标轴围成三角形的面积</div>
+                  <div class="gr-verdict"><span class="ai">AI 判分</span><span class="pill amber">18 人错 / 48%</span></div>
+                  <div class="gr-cause cause-line"><span class="cause-cat method">方法与步骤</span><span class="cause-desc">知道要算面积，但未先令 x=0、y=0 求交点，步骤顺序错误</span> · 知识点「围成面积」</div>
+                  <div class="gbtns"><button class="gbtn on" onclick="gradeToggle(this)">✓ 认可判分</button><button class="gbtn" onclick="gradeToggle(this)">改判 / 调错因</button></div>
+                </div>
+              </div>
+            </div>
+            <div class="grade-row">
+              <div class="gr-top">
+                <span class="gr-no">Q5</span>
+                <div class="gr-main">
+                  <div class="gq">已知两点求一次函数解析式</div>
+                  <div class="gr-verdict"><span class="ai">AI 判分</span><span class="pill amber">10 人错 / 25%</span></div>
+                  <div class="gr-cause cause-line"><span class="cause-cat calc">计算</span><span class="cause-desc">待定系数法步骤正确，但在解方程组时 b 的符号写错</span> · 知识点「求解析式」</div>
+                  <div class="gbtns"><button class="gbtn on" onclick="gradeToggle(this)">✓ 认可判分</button><button class="gbtn" onclick="gradeToggle(this)">改判 / 调错因</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card blk" style="margin-top:14px;">
+          <h3>学生得分概览 <span class="hint">点学生看 TA 的作答与错因</span></h3>
+          <table class="stable">
+            <thead><tr><th>学生</th><th>总分</th><th>错题</th><th>主要错因</th><th></th></tr></thead>
+            <tbody>
+              <tr onclick="drillStudent('xm')"><td class="nm">小明</td><td><span class="sc low">58</span></td><td>4 题</td><td><span class="cause-cat concept">概念性</span></td><td class="arr">查看 →</td></tr>
+              <tr onclick="drillStudent('zl')"><td class="nm">张磊</td><td><span class="sc low">61</span></td><td>3 题</td><td><span class="cause-cat reading">审题</span> · <span class="cause-cat concept">概念性</span></td><td class="arr">查看 →</td></tr>
+              <tr onclick="drillStudent('ln')"><td class="nm">李娜</td><td><span class="sc mid">74</span></td><td>2 题</td><td>审题漏条件</td><td class="arr">查看 →</td></tr>
+              <tr onclick="drillStudent('cj')"><td class="nm">陈静</td><td><span class="sc">83</span></td><td>1 题</td><td>计算粗心</td><td class="arr">查看 →</td></tr>
+            </tbody>
+          </table>
+          <div class="drill" id="drill">
+            <div class="dh"><b id="drill-name">小明 · 第1题作答</b><span class="cl" onclick="document.getElementById('drill').classList.remove('active')">×</span></div>
+            <div class="drow">
+              <div class="dl">题目 Q1 · 看图判断 k、b 符号</div>
+              <div style="font-size:13px;">图像经过第一、二、四象限,求 k、b 的符号</div>
+            </div>
+            <div class="drow">
+              <div class="dl">TA 的作答</div>
+              <div class="myans"><div class="t">小明写的</div><div class="a" id="drill-ans">k &gt; 0, b &gt; 0（错）</div></div>
+            </div>
+            <div class="drow">
+              <div class="dl">AI 归因</div>
+              <div style="font-size:13px;" id="drill-cause" class="cause-line"><span class="cause-cat concept">概念性</span><span class="cause-desc">会根据公式计算，但未理解图像趋势与 k 正负的对应关系，把增减性判断反了</span> · 知识点「看图判断增减」</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <div class="ab-txt">确认后,这份作业的<b>错题数据</b>就准备好了 —— 进入备课讲评,看班级整体学情</div>
+          <div class="gate">
+            <button class="ghost-btn">导出批改结果</button>
+            <button class="cta" onclick="confirmGrade()">确认批改,去备课讲评 →</button>
+          </div>
+        </div>
+        </div><!-- /grade-detail -->
+      </div>
+
+      <!-- 备课讲评 -->
+      <div class="tpage" id="page-review">
+        <!-- 讲评列表 -->
+        <div class="subview active" id="review-list">
+          <div class="phead">
+            <div class="eyebrow">备课讲评</div>
+            <h1 style="margin-top:8px;">待讲评的作业</h1>
+            <div class="sub">已确认批改、错题数据就绪的作业,可生成讲评建议并布置订正</div>
+          </div>
+          <div class="sec-t">📝 待讲评 <span class="hint" style="font-weight:400; color:var(--ink-faint); font-size:12px;">点带「待讲评」的作业进入本次演示</span></div>
+          <div class="card rlist" style="margin-bottom:18px;">
+            <div class="rrow" onclick="openSub('review')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(3)班 · 第 12 次 · 已确认批改 · 142 条错题</p></div><span class="rmeta">今天 11:00</span><span class="pill blue">待讲评</span></div>
+            <div class="rrow" onclick="toast('演示聚焦初二(3)班 · 一次函数;其他为占位数据')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(1)班 · 第 12 次 · 已确认批改</p></div><span class="rmeta">昨天 16:40</span><span class="pill blue">待讲评</span></div>
+          </div>
+          <div class="sec-t">✅ 已讲评 / 已布置订正</div>
+          <div class="card rlist">
+            <div class="rrow" onclick="toast('演示聚焦初二(3)班 · 一次函数;其他为占位数据')"><div class="rc">📊</div><div class="rt"><b>一元一次不等式 · 小测</b><p>初二(3)班 · 第 11 次 · 已布置订正</p></div><span class="rmeta">2 天前</span><span class="pill green">订正回收中</span></div>
+          </div>
+        </div>
+
+        <!-- 讲评详情 -->
+        <div class="subview" id="review-detail">
+        <div class="backlink" onclick="backSub('review')">← 返回讲评列表</div>
+        <div class="phead">
+          <div class="eyebrow">备课讲评 · 讲评前</div>
+          <h1 style="margin-top:8px;">一次函数 · 课后作业</h1>
+          <div class="sub">初二(3)班 · <b>38/40</b> 已交 · 共 8 题 · 今天 10:24 回收</div>
+        </div>
+
+        <div class="lifeflow">
+          <div class="lf-node done"><span class="lf-dot">✓</span><span class="lf-lb">作业管理</span></div>
+          <div class="lf-bar done"></div>
+          <div class="lf-node done"><span class="lf-dot">✓</span><span class="lf-lb">智能批改</span></div>
+          <div class="lf-bar done"></div>
+          <div class="lf-node current"><span class="lf-dot">3</span><span class="lf-lb">备课讲评</span></div>
+          <div class="lf-bar"></div>
+          <div class="lf-node"><span class="lf-dot">4</span><span class="lf-lb">订正回收</span></div>
+          <div class="lf-bar"></div>
+          <div class="lf-node"><span class="lf-dot">✓</span><span class="lf-lb">已闭环</span></div>
+        </div>
+
+        <div class="agg">
+          <span class="ai">📈</span>
+          <div>结合过去 5 次作业看,<b>「看图判断增减」已是本班第 3 次集中出错</b>的弱项,且这次错误率最高（63%）。建议这次<b>重点攻它</b>,别再只当成偶发。<span class="lk" onclick="tnav('trace')">查看学情溯源 →</span></div>
+        </div>
+
+        <div class="sec-t">这次答得怎么样</div>
+        <div class="stat-row">
+          <div class="card stat"><div class="k">交了多少</div><div class="v">38<small>/40 人</small></div><div class="meta">2 人没交,已自动提醒</div></div>
+          <div class="card stat"><div class="k">班级均分</div><div class="v">72<small>/100</small></div><div class="meta">比上次低 6 分</div></div>
+          <div class="card stat"><div class="k">最集中的问题</div><div class="v" style="font-size:21px;">看图判断</div><div class="meta">占了所有错误的 41%</div></div>
+          <div class="card stat"><div class="k">要单独跟进</div><div class="v">6<small> 人</small></div><div class="meta">错得比较多,建议课后跟一下</div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card blk">
+            <h3>大家主要错在这里 <span class="hint">错得多的排在前面</span></h3>
+            <div class="bar">
+              <div class="b-top"><span class="q"><span>第1题</span>看图判断 k、b 的正负</span><span class="pct">63% 答错</span></div>
+              <div class="track"><div class="fill" style="width:63%"></div></div>
+              <div class="cause"><span class="cause-cat concept">概念性</span> · 会根据公式计算，但未理解图像趋势与 k 的对应关系</div>
+            </div>
+            <div class="bar">
+              <div class="b-top"><span class="q"><span>第3题</span>直线与坐标轴围成的面积</span><span class="pct">48% 答错</span></div>
+              <div class="track"><div class="fill mid" style="width:48%"></div></div>
+              <div class="cause"><span class="cause-cat method">方法与步骤</span> · 未先求交点就算面积，步骤顺序错误</div>
+            </div>
+            <div class="bar">
+              <div class="b-top"><span class="q"><span>第2题</span>求一次函数解析式</span><span class="pct">25% 答错</span></div>
+              <div class="track"><div class="fill mid" style="width:25%"></div></div>
+              <div class="cause"><span class="cause-cat calc">计算</span> · 待定系数法步骤对，但解方程组时符号写错</div>
+            </div>
+          </div>
+
+          <div class="card blk">
+            <h3>建议这样讲 <span class="hint">AI 生成,可改</span></h3>
+            <div class="gen-empty" id="reviewEmpty">
+              <p>结合本次错因与历史弱项,生成一份讲评建议<br>(讲什么 / 谁先讲 / 谁放进个人订正)。</p>
+              <button class="gen-btn" onclick="genReview()">✨ 生成讲评建议</button>
+            </div>
+            <ul class="review-list" id="reviewList" style="display:none;">
+              <li><span class="n">1</span><div class="txt"><b>重点讲第1题 · 看图说符号</b><p>用两道图像题，让学生自己说出 k、b 怎么变，攻下全班的共性问题（概念性）</p></div></li>
+              <li><span class="n">2</span><div class="txt"><b>再讲第3题 · 先求交点</b><p>带着画一遍，强调先求交点再算面积（方法与步骤）</p></div></li>
+              <li><span class="n">3</span><div class="txt"><b>第2题不用集体讲</b><p>主要是计算符号错误，放进个人订正就行，省下课堂时间</p></div></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card blk" style="margin-top:14px;">
+          <h3>这些同学需要单独跟进 <span class="hint">布置订正后,他们会收到对应自己问题的题</span></h3>
+          <div class="students">
+            <span class="chip"><span class="s red"></span>小明 · 概念性</span>
+            <span class="chip"><span class="s red"></span>小红 · 概念性</span>
+            <span class="chip"><span class="s red"></span>张磊 · 审题</span>
+            <span class="chip"><span class="s amber"></span>李娜 · 方法与步骤</span>
+            <span class="chip"><span class="s amber"></span>王浩 · 审题</span>
+            <span class="chip"><span class="s amber"></span>陈静 · 计算</span>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <div class="ab-txt">布置后,每个学生会收到<b>针对自己错题</b>的订正任务:为什么错 + 跟着改 + 换题验证</div>
+          <div class="gate">
+            <button class="ghost-btn">先改改建议</button>
+            <button class="cta" onclick="confirmReview()">确认讲评,布置订正 →</button>
+          </div>
+        </div>
+        </div><!-- /review-detail -->
+      </div>
+
+      <!-- 学情回收 -->
+      <div class="tpage" id="page-recap">
+        <!-- 回收列表 -->
+        <div class="subview active" id="recap-list">
+          <div class="phead">
+            <div class="eyebrow">学情回收</div>
+            <h1 style="margin-top:8px;">订正回收与学情</h1>
+            <div class="sub">已布置订正的作业,在这里看学生「订正 + 变式」结果,判断是否<b>真学会</b> · 当前班级 <b>初二(3)班</b></div>
+          </div>
+          <div class="sec-t">↺ 订正回收中 <span class="hint" style="font-weight:400; color:var(--ink-faint); font-size:12px;">学生订正 / 变式作答回收中 · 点开看学会情况</span></div>
+          <div class="card rlist" style="margin-bottom:18px;">
+            <div class="rrow" onclick="openSub('recap')"><div class="rc">📐</div><div class="rt"><b>一次函数 · 课后作业</b><p>初二(3)班 · 第 12 次 · 38 人已完成订正</p></div><span class="rmeta">今天 16:40</span><span class="pill green">订正回收中</span></div>
+            <div class="rrow" onclick="toast('演示聚焦初二(3)班 · 一次函数;其他为占位数据')"><div class="rc">📊</div><div class="rt"><b>一元一次不等式 · 小测</b><p>初二(3)班 · 第 11 次 · 32/38 完成订正</p></div><span class="rmeta">2 天前</span><span class="pill green">订正回收中</span></div>
+          </div>
+          <div class="sec-t">✅ 已闭环</div>
+          <div class="card rlist">
+            <div class="rrow" onclick="toast('演示聚焦初二(3)班 · 一次函数;其他为占位数据')"><div class="rc">✅</div><div class="rt"><b>整式的乘法 · 课后作业</b><p>初二(3)班 · 第 10 次</p></div><span class="rmeta">学会率 91%</span><span class="pill gray">已闭环</span></div>
+            <div class="rrow" onclick="toast('演示聚焦初二(3)班 · 一次函数;其他为占位数据')"><div class="rc">✅</div><div class="rt"><b>平面直角坐标系 · 小测</b><p>初二(3)班 · 第 9 次</p></div><span class="rmeta">学会率 88%</span><span class="pill gray">已闭环</span></div>
+          </div>
+        </div>
+
+        <!-- 回收详情 -->
+        <div class="subview" id="recap-detail">
+        <div class="backlink" onclick="backSub('recap')">← 返回学情回收列表</div>
+        <div class="phead">
+          <div class="eyebrow">学情回收 · 讲评后</div>
+          <h1 style="margin-top:8px;">一次函数 · 订正情况</h1>
+          <div class="sub">初二(3)班 · 第 12 次作业 · 38 人已完成订正 · 更新于 今天 16:40</div>
+        </div>
+
+        <div class="lifeflow">
+          <div class="lf-node done"><span class="lf-dot">✓</span><span class="lf-lb">作业管理</span></div>
+          <div class="lf-bar done"></div>
+          <div class="lf-node done"><span class="lf-dot">✓</span><span class="lf-lb">智能批改</span></div>
+          <div class="lf-bar done"></div>
+          <div class="lf-node done"><span class="lf-dot">✓</span><span class="lf-lb">备课讲评</span></div>
+          <div class="lf-bar done"></div>
+          <div class="lf-node current"><span class="lf-dot">4</span><span class="lf-lb">订正回收</span></div>
+          <div class="lf-bar"></div>
+          <div class="lf-node"><span class="lf-dot">✓</span><span class="lf-lb">已闭环</span></div>
+        </div>
+
+        <div class="card summary-line">
+          这次讲评后,<b class="g">32 人真学会了</b>,还有 <b class="a">6 人没学牢</b>,<b class="r">2 人建议你当面讲一下</b>。
+        </div>
+
+        <div class="stat-row">
+          <div class="card stat"><div class="k">学会了</div><div class="v" style="color:var(--brand)">32<small> 人</small></div><div class="meta">换道题也能做对</div></div>
+          <div class="card stat"><div class="k">还没学牢</div><div class="v" style="color:var(--amber)">6<small> 人</small></div><div class="meta">订正对了,但换题又错</div></div>
+          <div class="card stat"><div class="k">建议面批</div><div class="v" style="color:var(--red)">2<small> 人</small></div><div class="meta">订正和换题都没做对</div></div>
+          <div class="card stat"><div class="k">全班学会率</div><div class="v">79<small>%</small></div><div class="meta">还有 8 人没真学会</div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card blk">
+            <h3>全班学会情况 <span class="hint">38 名已完成的学生</span></h3>
+            <div class="matrix" id="matrix"></div>
+            <div class="legend">
+              <span><i style="background:var(--brand)"></i>学会了</span>
+              <span><i style="background:var(--amber)"></i>还没学牢</span>
+              <span><i style="background:var(--red)"></i>建议面批</span>
+            </div>
+          </div>
+          <div class="card blk">
+            <h3>接下来建议 <span class="hint">来自学生订正结果</span></h3>
+            <ul class="review-list">
+              <li><span class="n" style="background:var(--red)">!</span><div class="txt"><b>小明、张磊 · 当面讲一下</b><p>「看图判断增减」概念性错误改完换题还是错,建议课后 5 分钟面批</p></div></li>
+              <li><span class="n" style="background:var(--amber)">~</span><div class="txt"><b>没学牢的 6 人 · 再练一组</b><p>已自动准备 2 道同类题,明天回收</p></div></li>
+              <li><span class="n" style="background:var(--brand)">↺</span><div class="txt"><b>下次课提醒</b><p>「看图判断」仍是全班弱项,建议下节课开场带大家复习 3 分钟</p></div></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <div class="ab-txt">还有 <b>8 人没真学会</b> —— 这次的"学会"还没完成,要不要给他们再补一组?</div>
+          <div class="gate">
+            <button class="ghost-btn">只发家长摘要</button>
+            <button class="cta" onclick="toast('已给没学会的同学再布置一组 · 明天回收')">给没学会的同学再练一组 ↺</button>
+          </div>
+        </div>
+        </div><!-- /recap-detail -->
+      </div>
+
+      <!-- 学情溯源 -->
+      <div class="tpage" id="page-trace">
+        <div class="phead">
+          <div class="eyebrow">学情溯源 · 跨 8 次作业沉淀</div>
+          <h1 style="margin-top:8px;" id="traceTitle">这学期,我带的班到底学得怎么样</h1>
+          <div class="sub">从<b>全部班级</b>横向对比,下钻到<b>单个班级</b>溯源根因、再到学生个人 · 数学组</div>
+        </div>
+
+        <!-- 维度切换 / 面包屑 -->
+        <div class="scope-tabs">
+          <div class="scope-tab all on" id="scopeTab-all" onclick="traceScope('all')">全部班级</div>
+          <span class="scope-arrow">▸</span>
+          <div class="scope-tab" id="scopeTab-c1" onclick="traceScope('c1')">初二(1)班</div>
+          <div class="scope-tab" id="scopeTab-c2" onclick="traceScope('c2')">初二(2)班</div>
+          <div class="scope-tab" id="scopeTab-c3" onclick="traceScope('c3')">初二(3)班</div>
+          <span class="scope-arrow" id="scopeStuArrow" style="display:none;">▸</span>
+          <div class="scope-tab" id="scopeStu" style="display:none;" onclick="openTraceStudent('张磊')">张磊</div>
+        </div>
+
+        <!-- ============ L1 全部班级（横向对比） ============ -->
+        <div id="trace-all">
+          <!-- L1-A 班级体检榜 -->
+          <div class="card blk" style="margin-bottom:14px;">
+            <div class="bk-h">班级体检榜 <span class="info" tabindex="0"><span class="tip">按<b>真掌握率</b>给三个班排序,看精力该往哪个班倾斜。</span></span> <span class="hint">点班级下钻 →</span></div>
+            <div class="rank">
+              <div class="rankrow" onclick="traceScope('c1')"><span class="rk">1</span><span class="rcls">初二(1)班</span><span class="rbar"><i style="width:90%;background:linear-gradient(90deg,var(--brand),#6ad0a6)"></i></span><span class="rpct">90%</span><span class="rmeta2">闭环 11/11 · 待提升 5 人</span></div>
+              <div class="rankrow" onclick="traceScope('c2')"><span class="rk">2</span><span class="rcls">初二(2)班</span><span class="rbar"><i style="width:86%;background:linear-gradient(90deg,var(--brand),#6ad0a6)"></i></span><span class="rpct">86%</span><span class="rmeta2">闭环 12/12 · 待提升 6 人</span></div>
+              <div class="rankrow" onclick="traceScope('c3')"><span class="rk">3</span><span class="rcls">初二(3)班</span><span class="rbar"><i style="width:79%;background:linear-gradient(90deg,var(--amber),#dda04e)"></i></span><span class="rpct">79%</span><span class="rmeta2 warn">闭环 6/8 · 待提升 8 人 ⚠</span></div>
+            </div>
+          </div>
+
+          <!-- L1-B 共性vs个性 + L1-C 跨班有效性 -->
+          <div class="trace-row2">
+            <div class="card blk">
+              <div class="bk-h">共性 vs 个性弱项 <span class="info" tabindex="0"><span class="tip">同一知识点<b>全班都红 = 共性</b>(多半是教材难度 / 进度 / 讲法问题);<b>只有某班红 = 个性</b>(那个班自己的问题)。</span></span></div>
+              <div class="cmx">
+                <table>
+                  <thead><tr><th class="kp">知识点</th><th>1班</th><th>2班</th><th>3班</th><th>判定</th></tr></thead>
+                  <tbody>
+                    <tr><td class="kp">图像与 k/b</td><td><span class="mc l2">55</span></td><td><span class="mc l1">48</span></td><td><span class="mc l1">38</span></td><td class="kind"><span class="co">共性弱项</span></td></tr>
+                    <tr><td class="kp">围成面积</td><td><span class="mc l2">52</span></td><td><span class="mc l2">55</span></td><td><span class="mc l2">55</span></td><td class="kind"><span class="co">共性弱项</span></td></tr>
+                    <tr><td class="kp">看图判断增减</td><td><span class="mc l3">78</span></td><td><span class="mc l3">72</span></td><td><span class="mc l2">52</span></td><td class="kind">3 班个性</td></tr>
+                    <tr><td class="kp">函数概念</td><td><span class="mc l4">90</span></td><td><span class="mc l4">88</span></td><td><span class="mc l4">92</span></td><td class="kind"><span class="ge">普遍掌握</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="rootcause"><b>图像与 k/b / 围成面积</b>三个班都弱 → 属共性,建议在<span class="rt">教学计划层面</span>统一调讲法或加课时,而非只盯某个班。</div>
+            </div>
+
+            <div class="card blk">
+              <div class="bk-h">教学有效性跨班对比 <span class="info" tabindex="0"><span class="tip">「看图判断」讲评后各班的掌握率提升幅度。同一套讲评在不同班的差距,能分清是<b>讲法</b>问题还是<b>班级基础</b>问题。</span></span> <span class="hint">同一套讲评</span></div>
+              <div class="xcmp">
+                <div class="xrow"><span class="xc">初二(1)班</span><span class="xtk"><i style="width:88%"></i></span><span class="xd up">+35</span></div>
+                <div class="xrow"><span class="xc">初二(2)班</span><span class="xtk"><i style="width:75%"></i></span><span class="xd up">+30</span></div>
+                <div class="xrow"><span class="xc">初二(3)班</span><span class="xtk"><i class="bad" style="width:18%"></i></span><span class="xd flat">+7</span></div>
+              </div>
+              <div class="rootcause">同样的讲评,1/2 班吸收良好、<b>3 班几乎没动</b> → 问题在<span class="rt">初二(3)班自身基础</span>,该班需补前置「图像与 k/b」,而非换讲法。
+                <div style="margin-top:10px;"><span onclick="traceScope('c3')" style="color:var(--brand);font-weight:700;cursor:pointer;">下钻初二(3)班深挖 →</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ L2 单个班级（纵向溯源） ============ -->
+        <div id="trace-class" style="display:none;">
+        <!-- KPI 健康度 -->
+        <div class="stat-row">
+          <div class="card stat"><div class="k">本月真掌握率</div><div class="v" style="color:var(--brand)">79<small>%</small></div><div class="meta">较上月 +6 ↑</div></div>
+          <div class="card stat"><div class="k">已闭环作业</div><div class="v">6<small>/8 次</small></div><div class="meta">2 次仍需二次干预</div></div>
+          <div class="card stat"><div class="k">有效讲评率</div><div class="v">75<small>%</small></div><div class="meta">8 次讲评 6 次真提升</div></div>
+          <div class="card stat"><div class="k">结构性弱项</div><div class="v" style="color:var(--red)">2<small> 个</small></div><div class="meta">反复出现,需专项</div></div>
+        </div>
+
+        <!-- 板块1 真掌握率趋势 -->
+        <div class="card blk" style="margin-bottom:14px;">
+          <div class="bk-h">班级真掌握率趋势 <span class="info" tabindex="0"><span class="tip"><b>真掌握率</b>(变式也对)始终低于<b>表面正确率</b>(当时做对),两线之间的差就是「批完≠学会」。讲评后真掌握率明显抬升。</span></span> <span class="hint">近 8 次作业</span></div>
+          <div style="margin-top:14px;">
+            <svg viewBox="0 0 640 210" style="width:100%; height:auto; display:block;">
+              <g stroke="rgba(33,31,27,.08)" stroke-width="1">
+                <line x1="40" y1="30" x2="620" y2="30"/><line x1="40" y1="67.5" x2="620" y2="67.5"/>
+                <line x1="40" y1="105" x2="620" y2="105"/><line x1="40" y1="142.5" x2="620" y2="142.5"/><line x1="40" y1="180" x2="620" y2="180"/>
+              </g>
+              <g fill="#a39d90" font-family="JetBrains Mono" font-size="9" text-anchor="end">
+                <text x="32" y="33">100</text><text x="32" y="108">50</text><text x="32" y="183">0</text>
+              </g>
+              <!-- 讲评点竖线 -->
+              <g stroke="rgba(28,107,79,.35)" stroke-width="1" stroke-dasharray="3 3">
+                <line x1="371" y1="30" x2="371" y2="180"/><line x1="537" y1="30" x2="537" y2="180"/>
+              </g>
+              <g fill="#134d39" font-family="PingFang SC" font-size="9.5" text-anchor="middle" font-weight="700">
+                <text x="371" y="26">讲评①</text><text x="537" y="26">讲评②</text>
+              </g>
+              <!-- 表面正确率 -->
+              <polyline fill="none" stroke="#c8821f" stroke-width="2" stroke-dasharray="4 3" opacity=".75" points="40,68 123,75 206,72 289,78 371,60 454,66 537,53 620,48"/>
+              <!-- 真掌握率 -->
+              <polyline fill="none" stroke="#1c6b4f" stroke-width="3" points="40,93 123,102 206,98 289,107 371,86 454,90 537,72 620,62"/>
+              <g fill="#1c6b4f">
+                <circle cx="40" cy="93" r="3"/><circle cx="123" cy="102" r="3"/><circle cx="206" cy="98" r="3"/><circle cx="289" cy="107" r="3"/>
+                <circle cx="454" cy="90" r="3"/><circle cx="620" cy="62" r="3"/>
+                <circle cx="371" cy="86" r="5" stroke="#fbfaf6" stroke-width="2"/><circle cx="537" cy="72" r="5" stroke="#fbfaf6" stroke-width="2"/>
+              </g>
+              <g fill="#a39d90" font-family="JetBrains Mono" font-size="9" text-anchor="middle">
+                <text x="40" y="198">1</text><text x="123" y="198">2</text><text x="206" y="198">3</text><text x="289" y="198">4</text>
+                <text x="371" y="198">5</text><text x="454" y="198">6</text><text x="537" y="198">7</text><text x="620" y="198">8</text>
+              </g>
+            </svg>
+          </div>
+          <div class="chart-legend"><span><i style="background:#1c6b4f"></i>真掌握率</span><span><i style="background:#c8821f"></i>表面正确率</span><span style="color:var(--brand-deep)">● 讲评点</span></div>
+        </div>
+
+        <!-- 板块3 教学有效性 + 板块2 知识点根因 -->
+        <div class="trace-row2">
+          <div class="card blk">
+            <div class="bk-h">教学有效性 <span class="info" tabindex="0"><span class="tip">每次讲评 / 订正后,这个知识点的掌握率提升了多少——回答「我讲的有没有用」。</span></span></div>
+            <div style="margin-top:12px;">
+              <div class="eff">
+                <div class="eff-top"><span class="nm">看图判断增减</span><span class="eff-tag ok">有效 ✓</span><span class="eff-delta up">+39</span></div>
+                <div class="eff-ba before"><span class="lab">讲评前</span><span class="tk"><i style="width:40%"></i></span><span class="pct">40%</span></div>
+                <div class="eff-ba after"><span class="lab">讲评后</span><span class="tk"><i style="width:79%"></i></span><span class="pct">79%</span></div>
+              </div>
+              <div class="eff">
+                <div class="eff-top"><span class="nm">围成面积</span><span class="eff-tag no">讲法待换</span><span class="eff-delta flat">+7</span></div>
+                <div class="eff-ba before"><span class="lab">讲评前</span><span class="tk"><i style="width:48%"></i></span><span class="pct">48%</span></div>
+                <div class="eff-ba after"><span class="lab">讲评后</span><span class="tk"><i style="width:55%"></i></span><span class="pct">55%</span></div>
+              </div>
+              <div class="eff">
+                <div class="eff-top"><span class="nm">求解析式</span><span class="eff-tag ok">有效 ✓</span><span class="eff-delta up">+32</span></div>
+                <div class="eff-ba before"><span class="lab">讲评前</span><span class="tk"><i style="width:60%"></i></span><span class="pct">60%</span></div>
+                <div class="eff-ba after"><span class="lab">讲评后</span><span class="tk"><i style="width:92%"></i></span><span class="pct">92%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card blk">
+            <div class="bk-h">知识点薄弱地图 <span class="info" tabindex="0"><span class="tip">颜色越红越弱。沿箭头往上游追,能定位到导致一串连环错的<b>根因知识点</b>。</span></span></div>
+            <div class="heat">
+              <div class="hcell l1"><div class="hn">图像与 k/b</div><div class="hv">38%</div></div>
+              <div class="hcell l2"><div class="hn">看图判断增减</div><div class="hv">52%</div></div>
+              <div class="hcell l2"><div class="hn">围成面积</div><div class="hv">58%</div></div>
+              <div class="hcell l2"><div class="hn">与方程结合</div><div class="hv">61%</div></div>
+              <div class="hcell l3"><div class="hn">求解析式</div><div class="hv">78%</div></div>
+              <div class="hcell l3"><div class="hn">函数概念</div><div class="hv">82%</div></div>
+              <div class="hcell l4"><div class="hn">求交点</div><div class="hv">85%</div></div>
+              <div class="hcell l4"><div class="hn">图像平移</div><div class="hv">88%</div></div>
+            </div>
+            <div class="rootcause">
+              班级在「看图判断增减 / 围成面积 / 与方程结合」上<b>连环出错</b>,往上游追,根因是前置的 <span class="rt">图像与 k/b</span> 没打牢。建议<b>先补根因</b>,而非逐个补下游。
+              <div class="chain"><span class="node root">图像与 k/b</span><span class="ar">→</span><span class="node">看图判断增减</span><span class="ar">→</span><span class="node">围成面积</span><span class="ar">→</span><span class="node">与方程结合</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- L2-④ 重点学生（分层 + 掉队 + 个体轨迹，合并精简） -->
+        <div class="card blk">
+          <div class="bk-h">重点学生 <span class="info" tabindex="0"><span class="tip">按近 5 次真掌握率分层,重点盯<b>掉队</b>的人,看他们从早到近的掌握轨迹。</span></span> <span class="hint">分层 + 掉队预警 · 点学生看完整轨迹</span></div>
+          <div class="tierbar">
+            <span class="seg t1" style="flex:12">掌握牢 12</span>
+            <span class="seg t2" style="flex:20">基本掌握 20</span>
+            <span class="seg t3" style="flex:8">待提升 8</span>
+          </div>
+          <ul class="review-list" style="margin-top:14px;">
+            <li class="clickable" onclick="openTraceStudent('张磊')"><span class="n" style="background:var(--red)">磊</span><div class="txt"><b>张磊 · 审题 <span class="pill red" style="font-size:10px;padding:2px 8px;margin-left:4px;">掉队预警</span></b><p>多次因审题类错误丢分，趋势未见好转，属结构性问题，建议单独纠正读题习惯</p><div class="seq"><i class="a">~</i><i class="r">✕</i><i class="a">~</i><i class="r">✕</i><i class="r">✕</i><i class="a">~</i><span class="sl">早 → 近</span></div></div><span class="go">完整画像 →</span></li>
+            <li class="clickable" onclick="toast('演示完整画像以「张磊」为例展开,点张磊查看')"><span class="n" style="background:var(--amber)">明</span><div class="txt"><b>小明 · 概念性 <span class="pill green" style="font-size:10px;padding:2px 8px;margin-left:4px;">已回升</span></b><p>3 次作业都错在概念性，经讲评+订正后最近一次已学会，有进步 ↑</p><div class="seq"><i class="r">✕</i><i class="r">✕</i><i class="a">~</i><i class="r">✕</i><i class="a">~</i><i class="g">✓</i><span class="sl">早 → 近</span></div></div><span class="go">完整画像 →</span></li>
+            <li class="clickable" onclick="toast('演示完整画像以「张磊」为例展开,点张磊查看')"><span class="n" style="background:var(--brand)">娜</span><div class="txt"><b>李娜 · 计算 <span class="pill green" style="font-size:10px;padding:2px 8px;margin-left:4px;">已稳</span></b><p>计算类错误从常错到基本不错，可减少跟进</p><div class="seq"><i class="r">✕</i><i class="a">~</i><i class="a">~</i><i class="g">✓</i><i class="g">✓</i><i class="g">✓</i><span class="sl">早 → 近</span></div></div><span class="go">完整画像 →</span></li>
+          </ul>
+        </div>
+        </div><!-- /trace-class -->
+
+        <!-- ============ L3 学生个体画像（个人作业数据下钻） ============ -->
+        <div id="trace-student" style="display:none;">
+          <div class="backlink" onclick="traceScope('c3')">← 返回初二(3)班学情</div>
+
+          <div class="card stu-head">
+            <div class="av">磊</div>
+            <div class="si">
+              <div class="nm">张磊 <span class="pill red" style="font-size:11px;">掉队预警</span></div>
+              <div class="mt">学号 02 · 初二(3)班 · Pad 已激活 · 画像来自近 8 次作业的订正闭环数据</div>
+            </div>
+            <div class="sr">
+              <div class="big" style="color:var(--red)">68<small>%</small></div>
+              <div class="cmp">真掌握率 · 较上月 <span class="down">-4 ↓</span> · 班级平均 79%</div>
+            </div>
+          </div>
+
+          <div class="stat-row">
+            <div class="card stat"><div class="k">真掌握率</div><div class="v" style="color:var(--red)">68<small>%</small></div><div class="meta">低于班级 11 个点</div></div>
+            <div class="card stat"><div class="k">订正闭环率</div><div class="v">60<small>%</small></div><div class="meta">8 次中 3 次未订正</div></div>
+            <div class="card stat"><div class="k">反复点</div><div class="v" style="color:var(--amber)">2<small> 个</small></div><div class="meta">审题 / 图像与 k/b</div></div>
+            <div class="card stat"><div class="k">班级排名</div><div class="v">31<small>/40</small></div><div class="meta">后段,需重点跟</div></div>
+          </div>
+
+          <!-- ① 掌握率轨迹 -->
+          <div class="card blk" style="margin-bottom:14px;">
+            <div class="bk-h">掌握率轨迹 <span class="info" tabindex="0"><span class="tip">把本人真掌握率和班级平均放一起看。张磊起步接近班级,但<b>后程持续掉在平均线下</b>,属结构性掉队、非偶发。</span></span> <span class="hint">张磊 vs 班级平均 · 近 8 次</span></div>
+            <div style="margin-top:14px;">
+              <svg viewBox="0 0 640 210" style="width:100%; height:auto; display:block;">
+                <g stroke="rgba(33,31,27,.08)" stroke-width="1">
+                  <line x1="40" y1="30" x2="620" y2="30"/><line x1="40" y1="67.5" x2="620" y2="67.5"/>
+                  <line x1="40" y1="105" x2="620" y2="105"/><line x1="40" y1="142.5" x2="620" y2="142.5"/><line x1="40" y1="180" x2="620" y2="180"/>
+                </g>
+                <g fill="#a39d90" font-family="JetBrains Mono" font-size="9" text-anchor="end">
+                  <text x="32" y="33">100</text><text x="32" y="108">50</text><text x="32" y="183">0</text>
+                </g>
+                <g stroke="rgba(28,107,79,.35)" stroke-width="1" stroke-dasharray="3 3">
+                  <line x1="371" y1="30" x2="371" y2="180"/><line x1="537" y1="30" x2="537" y2="180"/>
+                </g>
+                <g fill="#134d39" font-family="PingFang SC" font-size="9.5" text-anchor="middle" font-weight="700">
+                  <text x="371" y="26">讲评①</text><text x="537" y="26">讲评②</text>
+                </g>
+                <!-- 班级平均 -->
+                <polyline fill="none" stroke="#1c6b4f" stroke-width="2" stroke-dasharray="4 3" opacity=".55" points="40,93 123,102 206,98 289,107 371,86 454,90 537,72 620,62"/>
+                <!-- 张磊 -->
+                <polyline fill="none" stroke="#b8442f" stroke-width="3" points="40,90 123,97.5 206,93 289,102 371,87 454,93 537,81 620,78"/>
+                <g fill="#b8442f">
+                  <circle cx="40" cy="90" r="3"/><circle cx="123" cy="97.5" r="3"/><circle cx="206" cy="93" r="3"/><circle cx="289" cy="102" r="3"/>
+                  <circle cx="454" cy="93" r="3"/><circle cx="620" cy="78" r="3"/>
+                  <circle cx="371" cy="87" r="5" stroke="#fbfaf6" stroke-width="2"/><circle cx="537" cy="81" r="5" stroke="#fbfaf6" stroke-width="2"/>
+                </g>
+                <g fill="#a39d90" font-family="JetBrains Mono" font-size="9" text-anchor="middle">
+                  <text x="40" y="198">1</text><text x="123" y="198">2</text><text x="206" y="198">3</text><text x="289" y="198">4</text>
+                  <text x="371" y="198">5</text><text x="454" y="198">6</text><text x="537" y="198">7</text><text x="620" y="198">8</text>
+                </g>
+              </svg>
+            </div>
+            <div class="chart-legend"><span><i style="background:#b8442f"></i>张磊</span><span><i style="background:#1c6b4f"></i>班级平均</span><span style="color:var(--brand-deep)">● 讲评点</span></div>
+          </div>
+
+          <!-- ② 知识点分布 + ③ 错因构成 -->
+          <div class="trace-row2">
+            <div class="card blk">
+              <div class="bk-h">知识点掌握分布 <span class="info" tabindex="0"><span class="tip">张磊的强弱结构：求解析式已过关，弱在<b>图像与审题</b>。</span></span> <span class="hint">越红越弱</span></div>
+              <div style="margin-top:12px;">
+                <div class="kbar"><span class="kn">图像与 k/b</span><span class="ktk"><i class="l1" style="width:35%"></i></span><span class="kp2">35%</span></div>
+                <div class="kbar"><span class="kn">围成面积</span><span class="ktk"><i class="l1" style="width:40%"></i></span><span class="kp2">40%</span></div>
+                <div class="kbar"><span class="kn">看图判断增减</span><span class="ktk"><i class="l1" style="width:52%"></i></span><span class="kp2">52%</span></div>
+                <div class="kbar"><span class="kn">与方程结合</span><span class="ktk"><i class="l2" style="width:58%"></i></span><span class="kp2">58%</span></div>
+                <div class="kbar"><span class="kn">求解析式</span><span class="ktk"><i class="l3" style="width:82%"></i></span><span class="kp2">82%</span></div>
+                <div class="kbar"><span class="kn">函数概念</span><span class="ktk"><i class="l4" style="width:90%"></i></span><span class="kp2">90%</span></div>
+              </div>
+            </div>
+
+            <div class="card blk">
+              <div class="bk-h">错因构成 <span class="info" tabindex="0"><span class="tip">张磊近一半的错误是<b>审题</b>大类，属习惯问题、可专项纠正，而非智力问题。</span></span> <span class="hint">他为什么错</span></div>
+              <div class="donutwrap">
+                <div class="donut" style="background:conic-gradient(#b8442f 0 38%, #c8821f 38% 62%, #2f5e8c 62% 78%, #1c6b4f 78% 92%, #a39d90 92% 100%);">
+                  <div class="dc"><div><b>38%</b><span>审题为主</span></div></div>
+                </div>
+                <div class="dlegend">
+                  <div class="dleg"><span class="dot" style="background:#b8442f"></span><span class="dn">审题</span><span class="dp">38%</span></div>
+                  <div class="dleg"><span class="dot" style="background:#c8821f"></span><span class="dn">概念性</span><span class="dp">24%</span></div>
+                  <div class="dleg"><span class="dot" style="background:#2f5e8c"></span><span class="dn">方法与步骤</span><span class="dp">16%</span></div>
+                  <div class="dleg"><span class="dot" style="background:#1c6b4f"></span><span class="dn">计算</span><span class="dp">14%</span></div>
+                  <div class="dleg"><span class="dot" style="background:#a39d90"></span><span class="dn">书写与表达</span><span class="dp">8%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ④ 逐次作业明细 -->
+          <div class="card blk" style="margin-top:14px;">
+            <div class="bk-h">逐次作业明细 <span class="info" tabindex="0"><span class="tip">每次作业的得分、真掌握率、主要错因,以及是否完成<b>订正闭环</b>。未闭环的那几次,往往就是掉队的关键。</span></span> <span class="hint">横向看每一次</span></div>
+            <table class="stable">
+              <thead><tr><th>作业</th><th>得分</th><th>真掌握率</th><th>主要错因</th><th>订正闭环</th></tr></thead>
+              <tbody>
+                <tr><td class="nm">第8次 · 函数单元卷</td><td class="sc">72</td><td><span class="sc mid">68%</span></td><td><span class="cause-cat reading">审题</span></td><td><span class="pill green">已闭环</span></td></tr>
+                <tr><td class="nm">第7次 · 一次函数(B)</td><td class="sc">70</td><td><span class="sc mid">66%</span></td><td><span class="cause-cat concept">概念性</span></td><td><span class="pill green">已闭环</span></td></tr>
+                <tr><td class="nm">第6次 · 函数图像专练</td><td class="sc">58</td><td><span class="sc low">52%</span></td><td><span class="cause-cat concept">概念性</span></td><td><span class="pill red">未订正</span></td></tr>
+                <tr><td class="nm">第5次 · 一次函数(A)</td><td class="sc">75</td><td><span class="sc low">62%</span></td><td><span class="cause-cat reading">审题</span></td><td><span class="pill green">已闭环</span></td></tr>
+                <tr><td class="nm">第4次 · 综合卷二</td><td class="sc">64</td><td><span class="sc low">52%</span></td><td><span class="cause-cat method">方法与步骤</span></td><td><span class="pill red">未订正</span></td></tr>
+                <tr><td class="nm">第3次 · 综合卷一</td><td class="sc">68</td><td><span class="sc low">55%</span></td><td><span class="cause-cat calc">计算</span></td><td><span class="pill green">已闭环</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ⑤ 行动建议 + 入口 -->
+          <div class="card blk" style="margin-top:14px; background:linear-gradient(110deg,#fbfaf6,#eef4f0);">
+            <div class="bk-h">下一步怎么帮张磊</div>
+            <p style="font-size:13.5px;color:var(--ink-soft);line-height:1.75;margin-top:10px;">张磊真掌握率(68%)持续低于班级(79%)且仍在下滑;薄弱集中在<b style="color:var(--ink)">审题 + 图像与 k/b</b>,且 8 次中有 3 次<b style="color:var(--red)">未完成订正</b>(闭环率仅 60%)。建议:① 先抓<b>订正闭环</b>;② 专项补前置<b>图像与 k/b</b>;③ <b>审题习惯</b>单独纠正,而非加大题量。</p>
+          </div>
+          <div class="action-bar">
+            <div class="ab-txt">把诊断变成<b>给张磊的专属任务</b></div>
+            <div class="gate">
+              <button class="ghost-btn" onclick="toast('已为张磊生成专属家长摘要')">生成家长摘要</button>
+              <button class="cta" onclick="toast('已为张磊布置:图像与 k/b 补练 + 审题专项 3 题')">布置专属补练 →</button>
+            </div>
+          </div>
+        </div><!-- /trace-student -->
+      </div>
+
+      <!-- 家长摘要 -->
+      <div class="tpage" id="page-parent">
+        <div class="phead">
+          <div class="eyebrow">家长摘要</div>
+          <h1 style="margin-top:8px;">一句话,让家长看懂、会配合</h1>
+          <div class="sub">系统自动生成,你确认后一键群发 · 不制造焦虑,只给可执行的小建议</div>
+        </div>
+        <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start;">
+          <div class="card parent-card">
+            <div class="pc-top"><div class="t">小明家长 · 本周学情摘要</div><div class="h">这周,小明在数学上的一点进步</div></div>
+            <div class="pc-body">
+              <div class="pc-row"><div class="lb">本周主要问题</div><div class="v">一次函数"看图判断"还不太稳</div></div>
+              <div class="pc-row"><div class="lb">具体卡在哪</div><div class="v"><span class="cause-cat concept">概念性</span> · 会根据公式计算，但不太会根据图像判断增减关系</div></div>
+              <div class="pc-row yes"><div class="lb">好消息</div><div class="v">这次订正后已经学会了,换题也能做对 👍</div></div>
+              <div class="pc-row no"><div class="lb">不建议做</div><div class="v">今晚不用额外加题、不用报班</div></div>
+              <div class="pc-row yes"><div class="lb">在家可以这样配合</div><div class="v">让他用自己的话,给你讲一遍 2 道图像题怎么判断</div></div>
+            </div>
+          </div>
+          <div style="flex:1; min-width:240px;">
+            <div class="card blk">
+              <h3>群发设置</h3>
+              <p style="font-size:13px; color:var(--ink-soft); margin:10px 0 16px;">将为本班 38 名学生分别生成专属摘要,内容各不相同,均基于本次订正结果。</p>
+              <button class="cta" onclick="toast('已生成 38 份家长摘要 · 可一键群发')">生成全班家长摘要 →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 班级与学生 -->
+      <div class="tpage" id="page-classes">
+        <div class="phead">
+          <div class="eyebrow">班级与设置</div>
+          <h1 style="margin-top:8px;">班级与学生</h1>
+          <div class="sub">创建班级、导入学生名册 · 这里维护的班级会出现在顶部切换与作业布置里</div>
+        </div>
+
+        <div class="sec-t">🏫 我的班级 <span class="hint" style="font-weight:400; color:var(--ink-faint); font-size:12px;">点班级查看 / 管理名册</span></div>
+        <div class="cls-grid">
+          <div class="card cls-card on" onclick="pickCls(this,'初二(3)班')">
+            <div class="cc-top"><div class="cc-ic">📐</div><div><div class="cc-nm">初二(3)班</div><div class="cc-meta">数学 · 2026 级</div></div></div>
+            <div class="cc-stat"><div><b>40</b>学生</div><div><b>12</b>已布置</div><div><b>89%</b>平均学会率</div></div>
+          </div>
+          <div class="card cls-card" onclick="pickCls(this,'初二(2)班')">
+            <div class="cc-top"><div class="cc-ic">📐</div><div><div class="cc-nm">初二(2)班</div><div class="cc-meta">数学 · 2026 级</div></div></div>
+            <div class="cc-stat"><div><b>39</b>学生</div><div><b>12</b>已布置</div><div><b>86%</b>平均学会率</div></div>
+          </div>
+          <div class="card cls-card" onclick="pickCls(this,'初二(1)班')">
+            <div class="cc-top"><div class="cc-ic">📐</div><div><div class="cc-nm">初二(1)班</div><div class="cc-meta">数学 · 2026 级</div></div></div>
+            <div class="cc-stat"><div><b>41</b>学生</div><div><b>11</b>已布置</div><div><b>90%</b>平均学会率</div></div>
+          </div>
+          <div class="card cls-card cls-new" onclick="toast('新建班级 · 填写班级名 / 学科 / 年级')">
+            <span class="pls">＋</span><span>新建班级</span>
+          </div>
+        </div>
+
+        <div class="sec-t" style="margin-top:20px;">👥 <span id="clsRosterName">初二(3)班</span> 学生名册 <span class="hint" style="font-weight:400; color:var(--ink-faint); font-size:12px;">共 40 人 · 38 已激活 Pad</span></div>
+        <div class="card blk">
+          <div class="roster-bar">
+            <div class="rb-btn primary" onclick="toast('请选择 Excel 文件 · 支持 学号/姓名 两列批量导入')">📄 Excel 批量导入</div>
+            <div class="rb-btn" onclick="toast('已打开手动添加 · 输入学号与姓名')">➕ 手动添加学生</div>
+            <div class="rb-btn" onclick="toast('入班码已生成 · 学生扫码即可加入并激活 Pad')">🔗 生成入班码</div>
+          </div>
+          <table class="stable">
+            <thead><tr><th>学号</th><th>姓名</th><th>Pad 状态</th><th>近 5 次学会率</th><th></th></tr></thead>
+            <tbody>
+              <tr onclick="tnav('trace')"><td class="sc">01</td><td class="nm">小明</td><td><span class="pill green">已激活</span></td><td><span class="sc mid">72%</span></td><td class="arr">学情 →</td></tr>
+              <tr onclick="tnav('trace')"><td class="sc">02</td><td class="nm">张磊</td><td><span class="pill green">已激活</span></td><td><span class="sc mid">75%</span></td><td class="arr">学情 →</td></tr>
+              <tr onclick="tnav('trace')"><td class="sc">03</td><td class="nm">李娜</td><td><span class="pill green">已激活</span></td><td><span class="sc">84%</span></td><td class="arr">学情 →</td></tr>
+              <tr onclick="tnav('trace')"><td class="sc">04</td><td class="nm">陈静</td><td><span class="pill green">已激活</span></td><td><span class="sc">91%</span></td><td class="arr">学情 →</td></tr>
+              <tr onclick="toast('该生尚未激活 Pad · 可重发入班码')"><td class="sc">05</td><td class="nm">王浩</td><td><span class="pill gray">待激活</span></td><td><span class="sc">—</span></td><td class="arr">提醒 →</td></tr>
+            </tbody>
+          </table>
+          <div style="text-align:center; color:var(--ink-faint); font-size:12.5px; padding:12px 0 2px;">⋯ 其余 35 名学生</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- ================= STUDENT PAD ================= -->
+<section id="student" class="view">
+  <div class="pad-wrap">
+    <div class="pad-note">
+      <div class="eyebrow">学生端 · Pad</div>
+      <h2>小明的订正</h2>
+      <p>老师刚讲评完,给你留了几道"要弄懂"的题。这些题正是你这次错的——先搞懂为什么错,再换道题证明你真会了。</p>
+      <div class="qb">不是让你抄答案,是让你<b>真的学会</b>。做完,你的进步会自动告诉老师。</div>
+    </div>
+
+    <div class="pad">
+      <div class="pad-screen">
+        <div class="pad-top">
+          <div class="hello">下午好 👋<b>小明</b></div>
+          <div class="lring">
+            <div class="lab" id="ringLab">今天的题<b>0/3</b></div>
+            <svg width="44" height="44" viewBox="0 0 44 44">
+              <circle cx="22" cy="22" r="18" fill="none" stroke="#d6e7df" stroke-width="5"/>
+              <circle id="ringArc" cx="22" cy="22" r="18" fill="none" stroke="#1c6b4f" stroke-width="5" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="113" transform="rotate(-90 22 22)" style="transition:.4s;"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- screen: 做作业 / 交作业 -->
+        <div class="pscreen" id="ps-do">
+          <div class="pad-body">
+            <div class="encourage">
+              <div class="e1">今天的作业 · 一次函数 📐</div>
+              <div class="e2">老师布置了 8 道题,今天 09:00 前交给老师。认真做,做错没关系,后面会带你弄懂。</div>
+            </div>
+            <div class="qcard" style="margin-bottom:12px;">
+              <div class="qh"><span class="pill gray">第 1 题</span><span class="qn">选择题</span></div>
+              <div class="qt">一次函数 <span class="fx">y = kx + b</span> 的图像经过第一、二、四象限,则 k、b 的符号是(　)</div>
+              <div class="opts" style="margin-top:12px;">
+                <div class="opt"><span class="k">A</span>k &gt; 0, b &gt; 0</div>
+                <div class="opt right"><span class="k">B</span>k &lt; 0, b &gt; 0</div>
+                <div class="opt"><span class="k">C</span>k &gt; 0, b &lt; 0</div>
+                <div class="opt"><span class="k">D</span>k &lt; 0, b &lt; 0</div>
+              </div>
+            </div>
+            <div class="qcard">
+              <div class="qh"><span class="pill gray">第 2 题</span><span class="qn">解答题 · 手写</span></div>
+              <div class="qt">已知一次函数图像过点 (0,-1) 和 (1,1),求它的解析式。</div>
+              <div class="write">✍️ 在这里手写解答(Pad 手写 / 拍照上传)</div>
+            </div>
+            <div style="text-align:center; color:var(--ink-faint); font-size:12.5px; margin-top:14px;">⋯ 还有 6 题,已完成 5/8</div>
+          </div>
+          <div class="pad-foot">
+            <button class="next go" onclick="submitHomework()">交作业给老师 →</button>
+          </div>
+        </div>
+
+        <!-- screen: 今天要弄懂的题 -->
+        <div class="pscreen active" id="ps-task">
+          <div class="pad-body">
+            <div class="encourage">
+              <div class="e1">今天有 3 道题要弄懂 💪</div>
+              <div class="e2">都是这次作业你错的题,搞懂它们,下次就不丢分啦。</div>
+            </div>
+            <div class="task" onclick="startQuest()">
+              <span class="ti">📐</span>
+              <div class="tt"><b>第1题 · 看图判断 k、b</b><p><span class="cause-cat concept">概念性</span> · 老师重点讲过</p></div>
+              <span class="arr">→</span>
+            </div>
+            <div class="task">
+              <span class="ti">📏</span>
+              <div class="tt"><b>第3题 · 围成的面积</b><p><span class="cause-cat method">方法与步骤</span> · 记得先求交点</p></div>
+              <span class="arr">→</span>
+            </div>
+            <div class="task">
+              <span class="ti">✏️</span>
+              <div class="tt"><b>第2题 · 求解析式</b><p><span class="cause-cat calc">计算</span> · 细心检查符号</p></div>
+              <span class="arr">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- screen: 闯关 -->
+        <div class="pscreen" id="ps-quest">
+          <div class="steps" id="padSteps">
+            <div class="st curr" data-s="0"><div class="bar"><i></i></div><div class="nm">为什么错</div></div>
+            <div class="st" data-s="1"><div class="bar"><i></i></div><div class="nm">跟着改</div></div>
+            <div class="st" data-s="2"><div class="bar"><i></i></div><div class="nm">换题试试</div></div>
+            <div class="st" data-s="3"><div class="bar"><i></i></div><div class="nm">学会啦</div></div>
+          </div>
+          <div class="pad-body">
+            <div class="pstep active" data-s="0">
+              <div class="qcard">
+                <div class="qh"><span class="pill red">这题你错了</span><span class="qn">第 1 题</span></div>
+                <div class="qt">一次函数 <span class="fx">y = kx + b</span> 的图像经过第一、二、四象限,则 k、b 的符号是(　)</div>
+                <div class="myans"><div class="t">你当时写的</div><div class="a">k &gt; 0, b &gt; 0</div></div>
+              </div>
+              <div class="why">
+                <div class="lbl">🎯 先看看,为什么错了?</div>
+                <p><span class="cause-cat concept">概念性</span> · 你<b>会套公式</b>,但卡在「<b>看图判断增减</b>」。图像从左往右是往下走的,说明 y 随 x 增大而减小 → <b>k &lt; 0</b>;它和 y 轴交在上半轴 → <b>b &gt; 0</b>。你把「经过第一象限」误当成了 k&gt;0。</p>
+              </div>
+            </div>
+            <div class="pstep" data-s="1">
+              <div class="qcard">
+                <div class="qh"><span class="pill amber">跟着改一遍</span><span class="qn">一步步想</span></div>
+                <ol class="ordered">
+                  <li>先看图像<b>走势</b>:从左上到右下 → 在下降</li>
+                  <li>下降 → y 随 x 增大而减小 → <b>k &lt; 0</b></li>
+                  <li>再看和 <b>y 轴的交点</b>:在上半轴 → <b>b &gt; 0</b></li>
+                  <li>所以 k&lt;0、b&gt;0,选 <b>B</b></li>
+                </ol>
+              </div>
+              <div class="write">✍️ 在这里手写你的订正(Pad 手写 / 拍照上传)</div>
+            </div>
+            <div class="pstep" data-s="2">
+              <div class="qcard">
+                <div class="qh"><span class="pill green">换道题,你来试试</span><span class="qn">真会了吗?</span></div>
+                <div class="qt">如果一条直线从左到右<b>往上走</b>,而且和 y 轴交在<b>下半轴</b>,那么 k、b 的符号是(　)</div>
+              </div>
+              <div class="opts" id="opts">
+                <div class="opt" onclick="pick(this,false)"><span class="k">A</span>k &lt; 0, b &gt; 0</div>
+                <div class="opt" onclick="pick(this,true)"><span class="k">B</span>k &gt; 0, b &lt; 0</div>
+                <div class="opt" onclick="pick(this,false)"><span class="k">C</span>k &gt; 0, b &gt; 0</div>
+                <div class="opt" onclick="pick(this,false)"><span class="k">D</span>k &lt; 0, b &lt; 0</div>
+              </div>
+            </div>
+            <div class="pstep" data-s="3">
+              <div class="result">
+                <svg class="big-ring" width="120" height="120" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#d6e7df" stroke-width="10"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#1c6b4f" stroke-width="10" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                  <text x="60" y="58" text-anchor="middle" font-family="Bricolage Grotesque" font-size="34">🎉</text>
+                </svg>
+                <h3>这道题,你学会了!</h3>
+                <p>从「概念性错误」到「能讲出 k、b 怎么来」。你的进步已经告诉老师啦,继续加油!</p>
+                <div class="badge"><span class="pill green">✓ 已学会 · 看图判断增减</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="pad-foot">
+            <button class="prev" onclick="padPrev()">←</button>
+            <button class="next" id="padNext" onclick="padNext()">我懂了,去改一遍 →</button>
+          </div>
+        </div>
+
+        <!-- screen: 我的错题本 -->
+        <div class="pscreen" id="ps-book">
+          <div class="pad-body">
+            <div class="encourage">
+              <div class="e1">我攻克的题 · 12 道 🏆</div>
+              <div class="e2">这些都是你从不会到学会的题,很厉害!</div>
+            </div>
+            <div class="book-sec">最近学会的</div>
+            <div class="bitem"><span class="bi g">✅</span><div class="bt"><b>看图判断 k、b 符号</b><p>从概念性错误 → 换题也能做对</p></div></div>
+            <div class="bitem"><span class="bi g">✅</span><div class="bt"><b>求解析式 · 符号</b><p>已经连续 3 次计算类没错啦</p></div></div>
+            <div class="book-sec" style="margin-top:14px;">还要加油的</div>
+            <div class="bitem"><span class="bi a">💪</span><div class="bt"><b>围成面积</b><p>方法与步骤还需巩固,再练两道就能拿下</p></div></div>
+          </div>
+        </div>
+
+        <div class="pad-tabs">
+          <button id="tab-do" onclick="padTab('do')"><span class="i">📝</span>做作业</button>
+          <button class="active" id="tab-task" onclick="padTab('task')"><span class="i">📋</span>要弄懂的题</button>
+          <button id="tab-book" onclick="padTab('book')"><span class="i">🏆</span>我的错题本</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"><span class="d"></span><span id="toastMsg"></span></div>
+
+<script src="app.js"></script>
+</body>
+</html>
