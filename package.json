@@ -1,7 +1,0 @@
-{
-  "name": "learnloop-prototype",
-  "private": true,
-  "scripts": {
-    "build": "rm -rf dist && mkdir -p dist && cp 原型/index.html 原型/styles.css 原型/app.js dist/"
-  }
-}
